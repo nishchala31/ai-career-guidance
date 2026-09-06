@@ -1,5 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 
 st.set_page_config(page_title="AI Career Guidance System", page_icon="🎓", layout="wide")
 
@@ -8,7 +8,7 @@ st.title("🎓 AI Career Guidance Platform")
 option = st.sidebar.selectbox("Choose a Module", ["Career Guidance Chatbot", "Placement Predictor"])
 
 if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 
     if option == "Career Guidance Chatbot":
         st.subheader("💬 AI Career Guidance Assistant")
@@ -17,9 +17,10 @@ if "GEMINI_API_KEY" in st.secrets:
             if user_query:
                 with st.spinner("Thinking..."):
                     try:
-                        # Direct call to standard stable model
-                        model = genai.GenerativeModel("gemini-1.5-flash")
-                        response = model.generate_content(user_query)
+                        response = client.models.generate_content(
+                            model="gemini-2.5-flash",
+                            contents=user_query,
+                        )
                         st.write(response.text)
                     except Exception as e:
                         st.error(f"Error: {e}")
