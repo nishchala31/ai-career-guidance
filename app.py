@@ -17,7 +17,14 @@ if "GEMINI_API_KEY" in st.secrets:
             if user_query:
                 with st.spinner("Thinking..."):
                     try:
-                        model = genai.GenerativeModel("gemini-pro")
+                        # Auto-select the first working text generation model
+                        available_models = [
+                            m.name for m in genai.list_models() 
+                            if 'generateContent' in m.supported_generation_methods
+                        ]
+                        model_name = available_models[0] if available_models else "gemini-pro"
+                        
+                        model = genai.GenerativeModel(model_name)
                         response = model.generate_content(user_query)
                         st.write(response.text)
                     except Exception as e:
@@ -32,4 +39,4 @@ if "GEMINI_API_KEY" in st.secrets:
         if st.button("Predict Readiness"):
             readiness_score = (cgpa * 7) + (internships * 10) + (projects * 5)
             st.metric(label="Overall Readiness Score", value=f"{min(readiness_score, 100):.1f} / 100")
-
+            
