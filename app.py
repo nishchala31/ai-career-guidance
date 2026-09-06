@@ -18,7 +18,7 @@ if "GEMINI_API_KEY" in st.secrets:
                 with st.spinner("Thinking..."):
                     try:
                         response = client.models.generate_content(
-                            model="gemini-2.5-flash",
+                            model="gemini-3.6-flash",
                             contents=user_query,
                         )
                         st.write(response.text)
