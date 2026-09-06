@@ -17,14 +17,8 @@ if "GEMINI_API_KEY" in st.secrets:
             if user_query:
                 with st.spinner("Thinking..."):
                     try:
-                        # Auto-select the first working text generation model
-                        available_models = [
-                            m.name for m in genai.list_models() 
-                            if 'generateContent' in m.supported_generation_methods
-                        ]
-                        model_name = available_models[0] if available_models else "gemini-pro"
-                        
-                        model = genai.GenerativeModel(model_name)
+                        # Direct call to standard stable model
+                        model = genai.GenerativeModel("gemini-1.5-flash")
                         response = model.generate_content(user_query)
                         st.write(response.text)
                     except Exception as e:
